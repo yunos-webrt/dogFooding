@@ -1,0 +1,75 @@
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=0" />
+	<title>云OS用户意见反馈</title>
+	<link rel="stylesheet" type="text/css" href="cite.css">
+	<link rel="stylesheet" href="jNotify.jquery.css" type="text/css" />
+	<style type="text/css">
+	.object{
+		height: 0;
+	}
+	.page > div{
+		padding: 2%;
+	}
+	p.notice{
+		margin-top: 38px;
+	}
+	div.submit{
+		bottom: 30px;
+		width: 96%;
+		margin-right: 2%
+	}
+	input{
+			box-shadow: 1px 1px 0 #fff;
+	padding: 10px;
+	border-radius: 5px;
+	border:1px #c4d3d8 solid;
+	width: 100%;
+		font-size: 20px;
+	color: #999;
+	}
+	em{
+		font-size: 25px;
+	}
+	</style>
+	<script type="text/javascript">
+	function setStaffId (argument) {
+		var staffEl = document.getElementById('staff');
+		var id = staffEl.value.trim();
+		if(id){
+			localStorage.setItem('staffId', id);
+			location.href='index.html';
+		}else{
+			console.warn('亲，请输入你的工号');
+			jNotify('亲，请输入你的工号或者手机号码!'); 
+			//yunos.util.toast('亲，请输入你的工号');
+		}
+	}
+	</script>
+</head>
+<body class='page' style='display:block;'>
+<nav>云OS内测反馈平台</nav>
+<div class = 'welcome'>
+	<em>欢迎您参加云OS内部用户测试！</em>
+
+<p class='notice'>云OS是一款快速成长中的产品，在您的使用中，难免会出现一些问题。欢迎您使用此应用来反馈您的宝贵意见和建议！本应用可能会收集手机的基本信息，以便统计各个版本的问题。同时，当有新的固件版本发布时，会有推送消息通知，以便您及时升级到最新的版本。</p>
+</br>
+</br>
+<p>
+<a href="#" class="notice"></a><br />
+</p>
+<div class="submit">
+<p style='margin-top:35px;'>最后，请填写您的阿里巴巴[员工号码]或合作厂商员工[手机号]，我们用它来联系您确认问题。</p>
+<input id='staff' placeholder='请输入员工号'>
+<div class='btn' onclick='setStaffId();'>确定并开始使用</div>
+</div>
+</div>
+<object id="yunosApiPlugin" type="application/x-device-api"></object>
+<script type="text/javascript" src='jquery-1.8.2.js'></script>
+<script type="text/javascript" src='yunos-native-mock.js'></script>
+<script type="text/javascript" src='yunos-native.js'></script>
+<script type="text/javascript" src='screen-adapt.js'></script>
+<script type="text/javascript" src="jNotify.jquery.js"></script>
+</body>
+</html>

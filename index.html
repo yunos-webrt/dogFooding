@@ -1,0 +1,503 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<script type="text/javascript">
+			var staffId = localStorage.getItem('staffId');
+			console.log('staffId in localStorage:'+staffId);
+			if(!staffId){
+				location.href = 'prerequisite.html?v='+Date.now();
+			}
+			var appCongf = {
+				server: 'http://dogfooding.cloudapp.yunos.com',
+				version: '2.1.11'
+			}
+			//@@@!!! delete when publish
+			//appCongf.server = '__cachehttp://10.230.227.41:10080';	//for test only
+			//console.warn('!!!!!!!! connected to test server.');
+			//var JsCloudAPI;
+			//if(!JsCloudAPI){
+			//	console.warn('@@@@@@@@ Not running on aliphone...');
+			//	appCongf.server = '';
+			//}
+		</script>
+
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale = 0.8, maximum-scale=1.0, user-scalable=no" />
+		<title>YunOS dog fooding</title>
+		
+		<link rel="stylesheet" type="text/css" href="cite.css" media="all" />
+		<link rel="stylesheet" href="jNotify.jquery.css" type="text/css" />
+		<script type="text/javascript" src='jquery-1.8.2.js'></script>
+		<script type="text/javascript" src='controls.js'></script>
+		<script type="text/javascript" src="jNotify.jquery.js"></script>
+	</head>
+
+<body>
+
+<div id='page-main' class='page' style='display:block;'>
+	<h1>云OS反馈平台</h1>
+	<div class='tab'>
+		<ul onclick='switchTab(this)'>
+			<li class='current'>首页</li>
+			<li>排行榜</li>
+			<li>我的反馈</li>
+			<li>赚分秘笈</li>
+		</ul>
+		<!-- Tab1 首页 -->
+		<div style='display:block;' class='info'>	
+
+			<p>我的积分：<em class='my-points'>--</em>点</p>
+			<p>我的排名：<em class='my-rank'>--</em>名</p>
+			<p>我的工号：<em class='staffId'>--</em></p>
+			<p>上次反馈：<span class='last-feedback'>--</span></p>
+			<div class='btn white' onclick='showPageFeedback()'>
+				我要反馈
+				<div>随时反馈遇到的问题</div>
+			</div>
+			<div class='btn disabled' onclick="if(!this.classList.contains('disabled'))showPageCheckin()" id='toCheckin'>
+				马上签到得积分
+				<div id='checkin-time-indicator'> </div>
+			</div>
+			<div id='ad'>
+			</div>
+		</div>
+		<!-- Tab2 排行榜 -->
+		<div class='info'>
+			<p>我的积分：<em class='my-points'>--</em>点</p>
+			<p>我的排名：<em class='my-rank'>--</em>名</p>
+			<table id='ranking'>
+				<tr><th>排名</th> <th>工号</th> <th>云帐号</th> <th>积分</th> </tr>
+				<!-- <tr><td>2</td> <td>61009</td> <td>yun</td> <td>325</td> </tr> -->
+			</table>
+		</div>
+		<!-- Tab3 我的反馈历史 -->
+		<div>
+			<p>反馈次数：<em class='feedback-times'>--</em>次</p>
+			<p>上次反馈：<span class='last-feedback'>--</span></p>
+			<table class='myFeedbacks'>
+				<!-- <tr><td>2012-10-15<br>评分签到</td> <td>+<em>20</em>分</td></tr> -->
+			</table>
+			<!-- <div class='btn'>载入更多</div> -->
+		</div>
+		<!-- Tab4 使用帮助 -->
+		<div>
+			<p align='center'>积分规则</p>
+			<hr style='margin-top:35px;'>
+			<p><em>1</em>登录云帐号、填写正确的工号后，进行签到或反馈，即可获得积分</p>
+			<p><em>2</em>积分获取规则：
+				<table>
+					<tr><th>方式</th> <th>得分</th> <th>规则</th></tr>
+					<tr><td>在双倍时段打分签到</td> <td>+10分</td> <td>签到每天2次</td></tr>
+					<tr><td>在其他时段打分签到</td> <td>+5分</td> <td>签到每天2次</td></tr>
+					<tr><td>签到时，有装SIM卡</td> <td>+5分</td> <td>每天最多两次</td></tr>
+					<tr><td>签到时，使用最新的云OS版本</td> <td>+5分</td> <td>每天最多两次</td></tr>
+					<tr><td>签到时，填写反馈</td> <td>+5分</td> <td>每天最多两次</td></tr>
+					<tr><td>单独发表一条反馈</td> <td>+5分</td> <td>累计</td></tr>
+				</table>
+			</p>
+			<p><em>3</em>积分可在后续的活动中使用</p>
+			<div style="margin-top:20px;" class='btn' onclick='logoff()'>注销当前工号</div>
+			<hr>
+			<p style='font-size:16px;'>当前应用版本：<span id='appVersion'>***</span></p>
+		</div>
+	</div>
+</div>
+
+<div id='page-checkin' class='page'>
+	<nav>
+		<div onclick='showPageMain()' class='btn-back'></div>
+		签到打分
+	</nav>
+	<div>
+		<p>你参与的内测版本是：<br><span class='firmware'>--</span></p>
+		<p style='float:left; margin-top:20px;'>打分</p>
+		<ul class='rating-stars' onclick='changeRate(this)'>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<p id='rating-text' style='border:1px #C4D3D8 solid; border-radius:5px; margin-bottom: 10px; padding: 8px'>&nbsp;</p>
+		<textarea placeholder='如有更多反馈，请在此填写！'></textarea>
+		<div class='checkbox' onclick='changeCheckboxState(this)'><div></div>  通过云邮发附件</div>
+		<div class='btn disabled' onclick='checkin(this)'>立即签到</div>	
+	</div>
+</div>
+
+<div id='page-feedback' class='page'>
+	<nav>
+		<div onclick='showPageMain()' class='btn-back'></div>
+		我要反馈
+	</nav>
+	<div>
+		<p>你参与的内测版本是：<br><span class='firmware'>--</span></p>
+		<p>您在这里写下的任何问题，将直接提交到外部Bugfree的“云OS/feedback”路径下。如需发送截图，请以云邮附件的形式发送给我们。<br>云饭团和测试团队感谢您！</p>
+		<textarea placeholder='在此填写的反馈，将直接提交到Bugfree。'></textarea>
+		<div class='checkbox' onclick='changeCheckboxState(this)'><div></div>  通过云邮发附件</div>
+		<div class='btn' onclick='postFeedback()'>直接反馈至Bugfree!</div>		
+	</div>		
+</div>
+<p>
+<a href="#" class="notice"></a><br />
+</p>
+<object id="yunosApiPlugin" type="application/x-device-api"></object>
+
+<script type="text/javascript" src="yunos-native-mock.js"></script>
+<script type="text/javascript" src="yunos-native.js"></script>
+<script type="text/javascript" src="screen-adapt.js"></script>
+<script type="text/javascript">
+
+function ajaxtest(){
+	$.ajax({
+     	type: 'GET',
+     	url: 'http://api-feedback.aliapp.com/helloace.do',
+    	data: '' ,
+    	success: function(data){
+    		alert(data.message);
+    	},
+    	dataType: 'json'
+	});
+}
+
+function logoff(){
+	localStorage.removeItem("staffId");
+	localStorage.removeItem('lastFeedback');
+	localStorage.removeItem('lastCheckin');
+	location.href="prerequisite.html";
+}
+
+function postFeedback(){
+	var feedback = $('#page-feedback textarea').val().trim();	//textarea
+	if(postFeedback.submitting){
+		//yunos.util.toast('亲，您的反馈正在提交，请稍候！');
+		jNotify('亲，您的反馈正在提交，请稍候！'); 
+		return;
+	}else{
+		postFeedback.submitting = true;
+	}
+	if(!feedback){
+		console.warn('Please write your feedback.');
+		jNotify('亲，您的输入有误请确认后提交!'); 
+		return;
+	}
+
+	console.log('@@@ start feedback');
+	var feedbackUrlParam = 'yunosId='+yunos.aliyunId
+		+'&staff='+localStorage.getItem('staffId')
+		+'&kp='+yunos.kp
+		+'&imei='+yunos.imei
+		+'&uuid='+yunos.uuid
+		+'&firmware='+yunos.firmware
+		+'&baseband='+yunos.baseband
+		+'&kernel='+yunos.kernel
+		+'&model='+yunos.model
+		+'&operator='+yunos.operator
+		+'&network='+yunos.network
+		+'&mobileNet='+yunos.mobileNetwork;
+	var url = '/giveFeedback?'+feedbackUrlParam+'&fd='+encodeURI(feedback);
+	
+	$.getJSON(appCongf.server+url+'&v='+Date.now()+'&client='+appCongf.version, function(json){
+			console.log('@@@ post feedback ok, get score:'+json.score);
+			$('#page-feedback textarea').val('');
+			postFeedback.submitting = false;
+			jNotify('亲，您的反馈已提交。此次得分：'+json.score+(json.bugId ? 'Bug ID:'+json.bugId : '')+'。如需提交Bug附件，请通过邮件发送！');
+			localStorage.setItem('lastFeedback', Date.now());
+			showPageMain();
+			if($('#page-feedback .checkbox').hasClass('on')){
+				var mail = feedback;
+				mail+='\n\n-----------------\n';
+				mail+='型号：'+yunos.model+'\n';
+				mail+='固件版本：'+yunos.firmware+'\n';
+				mail+='基带版本：'+yunos.baseband+'\n';
+				mail+='内核版本：'+yunos.kernel+'\n';
+				mail+='运营商：'+yunos.operator+'\n';
+				mail+='网络类型：'+yunos.network+'\n';
+				mail+='移动网络：'+yunos.mobileNetwork+'\n';
+
+				yunos.sendMail(mail, false);
+			}
+	});
+}
+function checkin(e){
+	if(e.classList.contains('disabled'))
+		return;
+	var score = $('#page-checkin .rating-stars')[0].scale;
+	var feedback = $('#page-checkin textarea').val().trim();
+
+	var feedbackUrlParam = 'yunosId='+yunos.aliyunId
+		+'&staff='+localStorage.getItem('staffId')
+		+'&kp='+yunos.kp
+		+'&imei='+yunos.imei
+		+'&uuid='+yunos.uuid
+		+'&firmware='+yunos.firmware
+		+'&baseband='+yunos.baseband
+		+'&kernel='+yunos.kernel
+		+'&model='+yunos.model
+		+'&operator='+yunos.operator
+		+'&network='+yunos.network
+		+'&mobileNet='+yunos.mobileNetwork;
+	var url = '/checkin?'+feedbackUrlParam+'&fd='+encodeURI(feedback)+'&score='+score;
+	e.classList.add('disabled');
+	$.getJSON(appCongf.server+url+'&v='+Date.now()+'&client='+appCongf.version, function(json){
+		e.classList.remove('disabled');
+		 $('#page-checkin textarea').val('');
+		var msg = '亲，签到得积分：'+json.score;
+		if(json.bugId)
+			msg+='，反馈Bugfree ID：'+json.bugId;
+		yunos.util.toast(msg);
+			console.log('Checkin ok, get score:'+JSON.stringify(json));
+			localStorage.setItem('lastCheckin', Date.now());
+			disableCheckin();
+			showPageMain();
+			if($('#page-checkin .checkbox').hasClass('on')){
+				var mail = feedback;
+				mail+='\n\n-----------------\n';
+				mail+='型号：'+yunos.model+'\n';
+				mail+='固件版本：'+yunos.firmware+'\n';
+				mail+='基带版本：'+yunos.baseband+'\n';
+				mail+='内核版本：'+yunos.kernel+'\n';
+				mail+='运营商：'+yunos.operator+'\n';
+				mail+='网络类型：'+yunos.network+'\n';
+				mail+='移动网络：'+yunos.mobileNetwork+'\n';
+				yunos.sendMail(mail, true);
+			}			
+	});
+}
+
+function changeRate(e){
+	if(!setRatingScale(e))
+		return;
+	$("#page-checkin .btn").removeClass("disabled");
+	
+	var txt;
+	switch(e.scale){
+	case 1:
+		txt = '我打1分。完全用不了，浪费我的时间。';
+		break;
+	case 2:
+		txt = '我打2分。勉强能用，只有基础功能正常或较多功能不可用';
+		break;
+	case 3:
+		txt = '我打3分。基本可用但不适合作为日常手机。';
+		break;
+	case 4:
+		txt = '我打4分。大部分功能正常使用，偶尔有功能出现问题。';
+		break;
+	case 5:
+		txt = '我打5分。不错，可以满足我日常使用。';
+		break;
+	}
+	$('#rating-text').text(txt+'\n');
+}
+function showPageMain(){
+		$('#page-main').show();
+		$('#page-checkin').hide();
+		$('#page-feedback').hide();
+		refreshMyInfo();
+}
+function showPageCheckin(){
+		$('#page-main').hide();
+		$('#page-checkin').show();
+		$('#page-feedback').hide();
+}
+function showPageFeedback(){
+		$('#page-main').hide();
+		$('#page-checkin').hide();
+		$('#page-feedback').show();
+}
+//刷新广告
+function refreshAd(){
+	//console.log('Getting add');
+	$.getJSON(appCongf.server+'/ad?v='+Date.now(), function(ad){
+		//console.log('html add'+adHTML);
+		if(ad.html)
+			$('#ad').html(ad.html);
+		else {
+			console.error('Get add error:'+ad.err);
+		}
+	});
+}
+//刷新我的反馈历史
+function refreshMyFeedbacks(){
+		$.getJSON(appCongf.server+'/feedbacks/'+localStorage.getItem('staffId')+'?v='+Date.now(), function(json){
+			console.log('Get feedback history from server'+JSON.stringify(json));
+			var html='';
+			for(var i=0; i<json.length; i++){
+				var f=json[i];
+				//var t=new Date(f.time);
+				var type = f.isPresence == 1 ? '评分签到' : '发表反馈';
+				var date = pastDate(f.time);
+				html+='<tr><td>'+date+'<br> '+type+'</td><td>+<em>'+f.points+'</em>分</td></tr>';
+			}
+			$('.myFeedbacks').html(html);
+		});
+	}
+//刷新排行榜
+function refreshRank(){
+	$.getJSON(appCongf.server+'/top?v='+Date.now(), function(points){
+		console.log('Get ranking:'+JSON.stringify(points));
+		var html='<tr><th>排名</th> <th>工号</th> <th>云帐号</th> <th>积分</th> </tr>';
+		var prv;	//the previous point
+		for(var i=0; i<points.length; i++){
+			var p=points[i];
+			var rank;
+			if(prv && (p.pts == prv.pts)){
+				rank = prv.rank;
+				console.log('old rank', points[i]);
+			}else{
+				rank = i+1;
+				prv={pts: p.pts, rank: rank};
+			}
+			html+='<tr><td>'+ rank +'</td> <td>'+p.staffId+'</td> <td>'+(p.yunosId || '-')+'</td><td>'+p.pts+'</td></tr>';
+		}
+		$('#ranking').html(html);
+	});
+}
+
+function refreshMyInfo(){
+	$('#appVersion').text(appCongf.version);
+	$('.firmware').text(yunos.firmware);
+	$('.staffId').text(localStorage.getItem('staffId'));
+	var lastF = localStorage.getItem('lastFeedback');
+	if(lastF){
+		$('.last-feedback').text(pastDate(parseInt(lastF)));
+	}else{
+		$('.last-feedback').text('您未反馈过');
+	}
+	refreshRank();
+	refreshMyFeedbacks();
+	//refreshAd();
+		
+	//console.log('refreshMyInfo');
+	var url = appCongf.server+'/info/'+localStorage.getItem('staffId')+'?v='+Date.now();
+	console.log('@@@ Get info url:'+url);
+	$.getJSON(url, function(json){
+		console.log('Get info from server'+JSON.stringify(json));
+		$('.my-points').text(json.total);
+		
+		if(json.times==0){
+			$('.my-rank').text('-');
+			localStorage.removeItem('lastCheckin');
+			localStorage.removeItem('lastFeedback');
+		}else{
+			$('.my-rank').text(json.rank);
+			localStorage.setItem('lastCheckin', json.last.checkin);
+			localStorage.setItem('lastFeedback', json.last.fbk);
+			$('.last-feedback').text(pastDate(parseInt(json.last.fbk)));
+		}
+		$('.feedback-times').text(json.times);
+	});
+}
+refreshMyInfo();
+
+function setCheckinTimeIndicator(){ //console.log('checkin...');
+			//12:00~13:00, 20:00~21:00
+			var now = new Date(); //2012,10,16,21,1,2
+			var noon = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0);	//12:00
+			var night = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 20, 0, 0);	//20:00
+			var h = now.getHours();
+			var msg;
+			var lastCheckin = parseInt(localStorage.getItem('lastCheckin')) || 0;
+			if(h<12){
+				msg = '距离上午场还有'+formatTime(noon - now);
+				if(lastCheckin > (noon.getTime()-16*3600*1000))//前一天晚8：00之后签到过
+					disableCheckin();
+				else
+					enableCheckin();
+			}else if(h==12){
+				msg = '上午场：'+formatTime((noon - now) + 3600*1000) + '内双倍积分！';
+				if(lastCheckin > noon.getTime())//12:00之后签到过
+					disableCheckin();
+				else
+					enableCheckin();
+			}else if(h<20){
+				
+				if(lastCheckin > noon.getTime()){
+					disableCheckin();
+					msg = '距离下午场还有'+formatTime(night - now);
+				}else{
+					enableCheckin();
+					msg = '上午场：'+formatTime((night - now))+'后结束';
+				}
+					
+			}else if(h==20){
+				msg = '下午场：'+formatTime(night - now + 3600*1000) + '内双倍积分！';
+				if(lastCheckin > night.getTime())//前一天晚8：00之后签到过
+					disableCheckin();
+				else
+					enableCheckin();
+			}else{
+				msg = '今日签到已结束！';
+				if(lastCheckin > night.getTime())//前一天晚8：00之后签到过
+					disableCheckin();
+				else
+					enableCheckin();
+			}
+			$('#checkin-time-indicator').text(msg);
+			setTimeout(setCheckinTimeIndicator, 1000);
+}
+setCheckinTimeIndicator();
+		
+function enableCheckin(){
+	$('#toCheckin').removeClass('disabled');
+}
+function disableCheckin(){
+	$('#toCheckin').addClass('disabled');
+}
+
+//time in miliseconds
+function formatTime(time){//console.log('formatTime:'+time);
+			time/=1000;
+			var str = '';
+			var h = parseInt(time/3600);
+			if(h){
+				str+=h+'时';
+				time%=3600;
+			}				
+			var m = parseInt(time/60);
+			if(m){
+				str+=m+'分';
+				time%=60;
+			}
+			time = parseInt(time);
+			if(time)
+			str+=time+'秒';
+			return str;
+}
+//formate date as '1分钟前。。。'
+function pastDate(past){ //past time of miliseconds
+	//console.log('pastDate:'+past);
+	var suffix = '前';
+	var day = '天';
+	var hour = '小时';
+	var min = '分钟';
+	var sec = '秒';
+	
+	var m = 60;
+	var h = 60*m;
+	var d = 24*h;
+	
+	var pastTime = parseInt((Date.now() - past)/1000);
+	if(pastTime < m){
+		return pastTime+sec+suffix;
+	}else if(pastTime < h){
+		return (Math.floor(pastTime/m))+min+suffix;
+	}else if(pastTime < d){
+		pastTime/=h;
+		return Math.floor(pastTime)+hour+suffix;
+	}else if(pastTime < 10*d){
+		pastTime/=d;
+		return Math.floor(pastTime)+day+suffix;
+	}else{
+		var d = new Date(past);
+		return (d.getMonth()+1)+'-'+d.getDate();
+	}
+}
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+body{
+	margin: 0;
+	padding: 0;
+	background: #ebf1f3;
+}
+.tab ul{
+	background: #c8d7dc;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+.tab li{
+	border-bottom: 3px #a9bbc0 solid;
+	padding: 13px 0 13px 0;
+	font-size: 20px;
+	width: 25%;
+	float: left;
+	text-align: center;
+	list-style: none;
+}
+.tab li.current, .tab li:hover{
+	color: #f17329;
+	border-bottom-color: #f17329;
+}
+/*Tab内容*/
+.tab > div {
+	display: none;
+	padding: 35px;
+	
+}
+p{
+	margin: 0;
+	padding: 3px 0 3px 0;
+}
+em {
+	font-style: normal;
+	font-weight: bold;	
+	color: #f17329;
+	text-shadow: none;
+}
+.my-points{
+	font-size: 30px;
+}
+.page {
+	display: none;
+	
+	text-shadow: 0 1px #fff;
+	color: #7e8b90;
+}
+.page h1, .page nav{
+	background: #c8d7dc;
+		text-align: center;
+		font-size: 30px;
+		padding: 18px;
+		margin: 0;
+}
+.page nav{
+	border-bottom: 3px #a9bbc0 solid;
+}
+.page p, textarea{
+	font-size: 20px;
+	color: #999;
+	margin: 0;
+}
+.btn{
+	text-shadow: none;
+	color: #fff;
+	padding: 13px;
+	font-size: 30px;
+	text-align: center;
+	margin: 15px 0 15px 0;
+	border: 1px #e5722e outset;
+	border-radius: 5px;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff985a), to(#f17329));
+}
+.btn div{
+	font-size: 18px;
+	color: #c95a18;
+}
+.btn.white{
+	color: #7e8b90;
+	border-color: #c4d3d8;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ebf1f3));
+}
+.btn.white div{
+	color: #c1c9cc;
+}
+.btn.disabled{
+	background: #d1dfe4;
+	border-color: #c4d3d8;
+}
+.btn.disabled div{
+	color: #c1c9cc;
+}
+.btn-back{
+	margin-top: 5px;
+	height: 29px;
+	width: 29px;
+	background: url(img/back-btn.png) no-repeat;
+	float: left;
+}
+#page-feedback > div, #page-checkin > div {
+	padding: 35px;
+}
+
+textarea{
+	box-shadow: 1px 1px 0 #fff;
+	border-radius: 5px;
+	border: 1px #c4d3d8 solid;
+	padding: 1%;
+	width: 98%;
+	height: 150px;
+}
+
+.checkbox{
+	font-size: 20px;
+	padding: 10px;
+}
+.checkbox > div{
+	margin-top: 2px;
+	margin-right: 10px;
+	float: left;
+	width: 22px;
+	height: 22px;
+	background: url(img/checkbox.png);
+	background-position-y: 0;
+}
+.checkbox.on > div{
+	background-position-y: -23px;
+}
+
+.rating-stars{
+	display: inline-block;
+	padding-left: 0;
+}
+.rating-stars li{
+	width: 34px;
+	height: 36px;
+	margin: 0 8px 0 8px;
+	background: url(img/rate_star_med_off.png);
+	display: inline-block;
+}
+.rating-stars li.on{
+		background: url(img/rate_star_med_on.png);
+}
+
+table{
+	border-collapse: collapse;
+	margin-top: 35px;
+	width: 100%;
+}
+th, td{
+	/*border-top: 1px #fff solid;*/
+	border-top: 1px #c9d7dc solid;
+	padding: 12px 0 12px 5px;
+	text-align: left;
+}
+th{
+	color: #999;
+}
+object{
+	height: 0;
+}
+ul, li, div{
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}

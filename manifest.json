@@ -1,0 +1,37 @@
+{
+    "name": "feedback",
+    "version": "0.1.0",
+    "type": "web",
+    "package": "com.yunos.webapp.feedback",
+    "minimum_runtime_version": "0.1.0",
+    "description": "feedback",
+    "icons": {
+        "48": "/img/LOGO.png",
+        "96": "/img/LOGO.png"
+    },
+    "developer": {
+        "name": "yunos",
+        "url": "http://www.yunos.com"
+    },
+    "launch_url": "http://feedback.aliapp.com",
+    "locales": {
+        "zh-rCN": {
+            "name": "Bug反馈",
+            "description": "云os缺陷反馈",
+            "developer": {
+                "name": "yunos",
+                "url": "http://www.yunos.com/"
+            }
+        },
+        "zh-rTW": {
+            "name": "Bug反馈",
+            "description": "云os缺陷反馈",
+            "developer": {
+                "name": "yunos",
+                "url": "http://www.yunos.com/"
+            }
+        }
+    },
+    "fullscreen": "true",
+    "platform": "phone"
+}
